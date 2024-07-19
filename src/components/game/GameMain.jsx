@@ -38,12 +38,14 @@ const GameMain = ({ handleEndGame }) => {
       {isLoading ? (
         <div className='flex flex-col items-center justify-center flex-grow'>
           <div className='animate-spin rounded-full h-16 w-16 border-b-2 border-kobi-400'></div>
-          <p className='mt-4 text-lg font-semibold text-kobi-600'>Loading...</p>
+          <p className='mt-4 text-lg font-semibold text-kobi-600'>
+            Cargando...
+          </p>
         </div>
       ) : (
         <div className='w-full max-w-sm flex flex-col items-center justify-center flex-grow'>
           <h1 className='text-xl font-bold text-center mb-4 text-kobi-600'>
-            Adivina la bandera de...
+            Clickea en la bandera de...
           </h1>
           <p className='text-2xl font-extrabold text-center mb-6 text-kobi-500'>
             {nameOfTheRandomCountry}
@@ -60,7 +62,7 @@ const GameMain = ({ handleEndGame }) => {
         </div>
       )}
       <FlatButton onClick={handleEndGame} className='w-full max-w-sm'>
-        End Game
+        Finalizar
       </FlatButton>
     </div>
   )

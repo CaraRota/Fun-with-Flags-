@@ -14,7 +14,7 @@ const MainPage = () => {
   return (
     <div className='flex justify-center items-center h-[90vh]'>
       {(!startGame || gameOver) && (
-        <FlatButton onClick={() => setStartGame(true)}>Start Game</FlatButton>
+        <FlatButton onClick={() => setStartGame(true)}>Comenzar</FlatButton>
       )}
       {startGame && !gameOver && (
         <>
