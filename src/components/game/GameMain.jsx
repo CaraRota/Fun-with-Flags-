@@ -19,6 +19,8 @@ const GameMain = ({ handleEndGame }) => {
   const [pickedCountry, setPickedCountry] = useState('')
   const [showExplosion, setShowExplosion] = useState(false)
 
+  const gameOverDuration = 5000
+
   useEffect(() => {
     if (selectedCountry !== '') {
       if (selectedCountry === nameOfTheRandomCountry) {
@@ -32,7 +34,7 @@ const GameMain = ({ handleEndGame }) => {
         setTimeout(() => {
           setShowGameOver(false)
           handleEndGame()
-        }, 1500)
+        }, gameOverDuration)
       }
     }
   }, [selectedCountry])
@@ -66,13 +68,18 @@ const GameMain = ({ handleEndGame }) => {
   const onClueClick = () => {
     setShowExplosion(true)
     setClue(true)
-    const filterCorrectAnswer = fourRandomCountries.filter(
+    const incorrectCountries = fourRandomCountries.filter(
       (country) => country.translations.es !== nameOfTheRandomCountry,
     )
-    const deleteTwoRandomCountries = filterCorrectAnswer
+    const oneIncorrectCountry = incorrectCountries
       .sort(() => 0.5 - Math.random())
       .slice(0, 1)
-    setFourRandomCountries([...deleteTwoRandomCountries, pickedCountry])
+    const correctCountry = fourRandomCountries.find(
+      (country) => country.translations.es === nameOfTheRandomCountry,
+    )
+    const newCountries = [correctCountry, ...oneIncorrectCountry]
+    const shuffledCountries = newCountries.sort(() => 0.5 - Math.random())
+    setFourRandomCountries(shuffledCountries)
   }
 
   const handleExplosionEnd = () => {
@@ -127,7 +134,12 @@ const GameMain = ({ handleEndGame }) => {
       </FlatButton>
 
       {showCelebration && <Celebration />}
-      {showGameOver && <GameOver />}
+      {showGameOver && (
+        <GameOver
+          pickedCountry={pickedCountry}
+          gameOverDuration={gameOverDuration}
+        />
+      )}
       {showHistory && <CountryHistory country={pickedCountry} />}
       {showExplosion && (
         <ExplosionAnimation onAnimationEnd={handleExplosionEnd} />
