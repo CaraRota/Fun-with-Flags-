@@ -68,12 +68,14 @@ const GameMain = ({ handleEndGame }) => {
           <h1 className='text-xl font-bold text-center mb-4 text-kobi-600'>
             Clickea en la bandera de...
           </h1>
-          <p className='text-2xl font-extrabold text-center mb-6 text-kobi-500'>
-            {nameOfTheRandomCountry}
-          </p>
-          <TextToSpeech
-            text={`Cual es la bandera de ${nameOfTheRandomCountry}?`}
-          />
+          <div className='flex gap-2 items-center justify-center mb-6'>
+            <p className='text-2xl font-extrabold text-center text-kobi-500'>
+              {nameOfTheRandomCountry}
+            </p>
+            <TextToSpeech
+              text={`Cual es la bandera de ${nameOfTheRandomCountry}?`}
+            />
+          </div>
           <div className='grid grid-cols-2 gap-4 w-full mb-6 mt-4'>
             {fourRandomCountries.map((country) => (
               <Flag

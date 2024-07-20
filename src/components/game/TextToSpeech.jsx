@@ -1,6 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import SpeakerIcon from '../uicomponents/icons/SpeakerIcon'
 
 const TextToSpeech = ({ text, lang = 'es-AR' }) => {
+  const [replay, setReplay] = useState(false)
+
   useEffect(() => {
     const speak = () => {
       if ('speechSynthesis' in window) {
@@ -20,9 +23,13 @@ const TextToSpeech = ({ text, lang = 'es-AR' }) => {
         window.speechSynthesis.onvoiceschanged = null
       }
     }
-  }, [text, lang])
+  }, [text, lang, replay])
 
-  return null
+  return (
+    <button onClick={() => setReplay(!replay)}>
+      <SpeakerIcon className='size-6' />
+    </button>
+  )
 }
 
 export default TextToSpeech
