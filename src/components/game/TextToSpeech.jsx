@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import SpeakerIcon from '../uicomponents/icons/SpeakerIcon'
 
-const TextToSpeech = ({ text, lang = 'es-AR' }) => {
+const TextToSpeech = ({ text, lang = 'es-AR', showSpeaker = true }) => {
   const [replay, setReplay] = useState(false)
 
   useEffect(() => {
@@ -26,9 +26,11 @@ const TextToSpeech = ({ text, lang = 'es-AR' }) => {
   }, [text, lang, replay])
 
   return (
-    <button onClick={() => setReplay(!replay)}>
-      <SpeakerIcon className='size-6' />
-    </button>
+    showSpeaker && (
+      <button onClick={() => setReplay(!replay)}>
+        <SpeakerIcon className='size-6' />
+      </button>
+    )
   )
 }
 

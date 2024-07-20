@@ -4,6 +4,7 @@ import Flag from './Flag'
 import TextToSpeech from './TextToSpeech'
 import Celebration from './Celebration'
 import GameOver from './GameOver'
+import CountryHistory from './CountryHistory'
 
 const GameMain = ({ handleEndGame }) => {
   const [fourRandomCountries, setFourRandomCountries] = useState([])
@@ -12,6 +13,9 @@ const GameMain = ({ handleEndGame }) => {
   const [selectedCountry, setSelectedCountry] = useState('')
   const [showCelebration, setShowCelebration] = useState(false)
   const [showGameOver, setShowGameOver] = useState(false)
+  const [clue, setClue] = useState('')
+  const [showHistory, setShowHistory] = useState(false)
+  const [pickedCountry, setPickedCountry] = useState('')
 
   useEffect(() => {
     if (selectedCountry !== '') {
@@ -29,6 +33,7 @@ const GameMain = ({ handleEndGame }) => {
         }, 1500)
       }
     }
+    setClue('')
   }, [selectedCountry])
 
   const fetchNewCountries = async () => {
@@ -42,6 +47,7 @@ const GameMain = ({ handleEndGame }) => {
       const randomCountries = data.sort(() => 0.5 - Math.random()).slice(0, 4)
       const randomCountry = randomCountries[Math.floor(Math.random() * 4)]
       setNameOfTheRandomCountry(randomCountry.translations.es)
+      setPickedCountry(randomCountry)
       setFourRandomCountries(randomCountries)
     } catch (error) {
       console.error(error)
@@ -54,6 +60,10 @@ const GameMain = ({ handleEndGame }) => {
     fetchNewCountries()
   }, [])
 
+  const onClueClick = () => {
+    setClue(pickedCountry.capital)
+  }
+
   return (
     <div className='min-h-screen flex flex-col items-center justify-between p-4'>
       {isLoading ? (
@@ -65,6 +75,11 @@ const GameMain = ({ handleEndGame }) => {
         </div>
       ) : (
         <div className='w-full max-w-sm flex flex-col items-center justify-center flex-grow'>
+          <div className='mb-3'>
+            <FlatButton onClick={() => setShowHistory(true)} className='w-full'>
+              Datos interesantes 🤓
+            </FlatButton>
+          </div>
           <h1 className='text-xl font-bold text-center mb-4 text-kobi-600'>
             Clickea en la bandera de...
           </h1>
@@ -85,13 +100,28 @@ const GameMain = ({ handleEndGame }) => {
               />
             ))}
           </div>
+          {clue ? (
+            <p className='text-lg font-semibold text-center text-kobi-600'>
+              La capital de {nameOfTheRandomCountry} es {clue}
+              <TextToSpeech
+                text={`La capital de ${nameOfTheRandomCountry} es ${clue}`}
+                showSpeaker={false}
+              />
+            </p>
+          ) : (
+            <FlatButton onClick={onClueClick} className='w-full'>
+              Pista 🤔
+            </FlatButton>
+          )}
         </div>
       )}
       <FlatButton onClick={handleEndGame} className='w-full max-w-sm'>
         Finalizar
       </FlatButton>
+
       {showCelebration && <Celebration />}
       {showGameOver && <GameOver />}
+      {showHistory && <CountryHistory country={pickedCountry} />}
     </div>
   )
 }
