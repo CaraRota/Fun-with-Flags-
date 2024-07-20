@@ -2,37 +2,57 @@ import React, { useEffect, useState } from 'react'
 import FlatButton from '../uicomponents/FlatButton'
 import Flag from './Flag'
 import TextToSpeech from './TextToSpeech'
+import Celebration from './Celebration'
+import GameOver from './GameOver'
 
 const GameMain = ({ handleEndGame }) => {
   const [fourRandomCountries, setFourRandomCountries] = useState([])
   const [nameOfTheRandomCountry, setNameOfTheRandomCountry] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCountry, setSelectedCountry] = useState('')
+  const [showCelebration, setShowCelebration] = useState(false)
+  const [showGameOver, setShowGameOver] = useState(false)
 
   useEffect(() => {
-    if (selectedCountry !== nameOfTheRandomCountry) {
-      handleEndGame()
-    }
-
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch('https://restcountries.com/v2/all')
-        if (!response.ok) {
-          throw new Error('Failed to fetch countries')
-        }
-        const data = await response.json()
-        const randomCountries = data.sort(() => 0.5 - Math.random()).slice(0, 4)
-        const randomCountry = randomCountries[Math.floor(Math.random() * 4)]
-        setNameOfTheRandomCountry(randomCountry.translations.es)
-        setFourRandomCountries(randomCountries)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setIsLoading(false)
+    if (selectedCountry !== '') {
+      if (selectedCountry === nameOfTheRandomCountry) {
+        setShowCelebration(true)
+        setTimeout(() => {
+          setShowCelebration(false)
+          fetchNewCountries()
+        }, 1000)
+      } else {
+        setShowGameOver(true)
+        setTimeout(() => {
+          setShowGameOver(false)
+          handleEndGame()
+        }, 1500)
       }
     }
-    fetchCountries()
   }, [selectedCountry])
+
+  const fetchNewCountries = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('https://restcountries.com/v2/all')
+      if (!response.ok) {
+        throw new Error('Failed to fetch countries')
+      }
+      const data = await response.json()
+      const randomCountries = data.sort(() => 0.5 - Math.random()).slice(0, 4)
+      const randomCountry = randomCountries[Math.floor(Math.random() * 4)]
+      setNameOfTheRandomCountry(randomCountry.translations.es)
+      setFourRandomCountries(randomCountries)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchNewCountries()
+  }, [])
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-between p-4'>
@@ -51,7 +71,9 @@ const GameMain = ({ handleEndGame }) => {
           <p className='text-2xl font-extrabold text-center mb-6 text-kobi-500'>
             {nameOfTheRandomCountry}
           </p>
-          <TextToSpeech text={nameOfTheRandomCountry} />
+          <TextToSpeech
+            text={`Cual es la bandera de ${nameOfTheRandomCountry}?`}
+          />
           <div className='grid grid-cols-2 gap-4 w-full mb-6 mt-4'>
             {fourRandomCountries.map((country) => (
               <Flag
@@ -66,6 +88,8 @@ const GameMain = ({ handleEndGame }) => {
       <FlatButton onClick={handleEndGame} className='w-full max-w-sm'>
         Finalizar
       </FlatButton>
+      {showCelebration && <Celebration />}
+      {showGameOver && <GameOver />}
     </div>
   )
 }

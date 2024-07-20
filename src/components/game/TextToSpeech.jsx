@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const TextToSpeech = ({ text, lang = 'es-MX' }) => {
+const TextToSpeech = ({ text, lang = 'es-AR' }) => {
   useEffect(() => {
     const speak = () => {
       if ('speechSynthesis' in window) {
@@ -14,7 +14,10 @@ const TextToSpeech = ({ text, lang = 'es-MX' }) => {
     speak()
     return () => {
       if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel()
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel()
+        }
+        window.speechSynthesis.onvoiceschanged = null
       }
     }
   }, [text, lang])
