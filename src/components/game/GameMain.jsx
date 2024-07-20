@@ -128,11 +128,13 @@ const GameMain = ({ handleEndGame }) => {
               Pista 🤔
             </FlatButton>
           )}
+          <div className='my-5'>
+            <FlatButton onClick={handleEndGame} className='w-full max-w-sm'>
+              Finalizar Partida
+            </FlatButton>
+          </div>
         </div>
       )}
-      <FlatButton onClick={handleEndGame} className='w-full max-w-sm'>
-        Finalizar
-      </FlatButton>
 
       {showCelebration && <Celebration />}
       {showGameOver && (
