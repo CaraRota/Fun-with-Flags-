@@ -5,6 +5,7 @@ import TextToSpeech from './TextToSpeech'
 import Celebration from './Celebration'
 import GameOver from './GameOver'
 import CountryHistory from './CountryHistory'
+import ExplosionAnimation from './ExplosionAnimation'
 
 const GameMain = ({ handleEndGame }) => {
   const [fourRandomCountries, setFourRandomCountries] = useState([])
@@ -13,9 +14,10 @@ const GameMain = ({ handleEndGame }) => {
   const [selectedCountry, setSelectedCountry] = useState('')
   const [showCelebration, setShowCelebration] = useState(false)
   const [showGameOver, setShowGameOver] = useState(false)
-  const [clue, setClue] = useState('')
+  const [clue, setClue] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
   const [pickedCountry, setPickedCountry] = useState('')
+  const [showExplosion, setShowExplosion] = useState(false)
 
   useEffect(() => {
     if (selectedCountry !== '') {
@@ -33,11 +35,12 @@ const GameMain = ({ handleEndGame }) => {
         }, 1500)
       }
     }
-    setClue('')
   }, [selectedCountry])
 
   const fetchNewCountries = async () => {
     setIsLoading(true)
+    setShowHistory(false)
+    setClue(false)
     try {
       const response = await fetch('https://restcountries.com/v2/all')
       if (!response.ok) {
@@ -61,7 +64,19 @@ const GameMain = ({ handleEndGame }) => {
   }, [])
 
   const onClueClick = () => {
-    setClue(pickedCountry.capital)
+    setShowExplosion(true)
+    setClue(true)
+    const filterCorrectAnswer = fourRandomCountries.filter(
+      (country) => country.translations.es !== nameOfTheRandomCountry,
+    )
+    const deleteTwoRandomCountries = filterCorrectAnswer
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 1)
+    setFourRandomCountries([...deleteTwoRandomCountries, pickedCountry])
+  }
+
+  const handleExplosionEnd = () => {
+    setShowExplosion(false)
   }
 
   return (
@@ -100,15 +115,7 @@ const GameMain = ({ handleEndGame }) => {
               />
             ))}
           </div>
-          {clue ? (
-            <p className='text-lg font-semibold text-center text-kobi-600'>
-              La capital de {nameOfTheRandomCountry} es {clue}
-              <TextToSpeech
-                text={`La capital de ${nameOfTheRandomCountry} es ${clue}`}
-                showSpeaker={false}
-              />
-            </p>
-          ) : (
+          {!clue && (
             <FlatButton onClick={onClueClick} className='w-full'>
               Pista 🤔
             </FlatButton>
@@ -122,6 +129,9 @@ const GameMain = ({ handleEndGame }) => {
       {showCelebration && <Celebration />}
       {showGameOver && <GameOver />}
       {showHistory && <CountryHistory country={pickedCountry} />}
+      {showExplosion && (
+        <ExplosionAnimation onAnimationEnd={handleExplosionEnd} />
+      )}
     </div>
   )
 }
