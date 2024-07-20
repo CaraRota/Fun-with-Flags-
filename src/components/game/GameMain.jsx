@@ -6,6 +6,7 @@ import Celebration from './Celebration'
 import GameOver from './GameOver'
 import CountryHistory from './CountryHistory'
 import ExplosionAnimation from './ExplosionAnimation'
+import Footer from '../footer/Footer'
 
 const GameMain = ({ handleEndGame }) => {
   const [fourRandomCountries, setFourRandomCountries] = useState([])
