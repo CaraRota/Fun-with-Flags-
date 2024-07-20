@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import FlatButton from '../uicomponents/FlatButton'
 import Flag from './Flag'
+import TextToSpeech from './TextToSpeech'
 
 const GameMain = ({ handleEndGame }) => {
   const [fourRandomCountries, setFourRandomCountries] = useState([])
@@ -50,7 +51,8 @@ const GameMain = ({ handleEndGame }) => {
           <p className='text-2xl font-extrabold text-center mb-6 text-kobi-500'>
             {nameOfTheRandomCountry}
           </p>
-          <div className='grid grid-cols-2 gap-4 w-full mb-6'>
+          <TextToSpeech text={nameOfTheRandomCountry} />
+          <div className='grid grid-cols-2 gap-4 w-full mb-6 mt-4'>
             {fourRandomCountries.map((country) => (
               <Flag
                 key={country.name}
